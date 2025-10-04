@@ -1,805 +1,9 @@
-import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Navbar } from '@/components/layout/Navbar';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/lib/axios';
-
-// const colorPalettes = [
-//   { name: 'Purple Gradient', primary: '#8B5CF6', secondary: '#F3E8FF' },
-//   { name: 'Blue Ocean', primary: '#3B82F6', secondary: '#EBF8FF' },
-//   { name: 'Green Forest', primary: '#10B981', secondary: '#D1FAE5' },
-//   { name: 'Pink Sunset', primary: '#EC4899', secondary: '#FCE7F3' },
-//   { name: 'Orange Fire', primary: '#F59E0B', secondary: '#FEF3C7' },
-//   { name: 'Red Passion', primary: '#EF4444', secondary: '#FEE2E2' }
-// ];
-
-// const fontOptions = [
-//   { name: 'Inter', family: 'Inter, sans-serif', category: 'sans-serif' },
-//   { name: 'Roboto', family: 'Roboto, sans-serif', category: 'sans-serif' },
-//   { name: 'Open Sans', family: 'Open Sans, sans-serif', category: 'sans-serif' },
-//   { name: 'Montserrat', family: 'Montserrat, sans-serif', category: 'sans-serif' },
-//   { name: 'Poppins', family: 'Poppins, sans-serif', category: 'sans-serif' },
-//   { name: 'Lato', family: 'Lato, sans-serif', category: 'sans-serif' },
-//   { name: 'Source Sans Pro', family: 'Source Sans Pro, sans-serif', category: 'sans-serif' },
-//   { name: 'Nunito', family: 'Nunito, sans-serif', category: 'sans-serif' }
-// ];
-
-// const templates = [
-//   { 
-//     id: 'modern', 
-//     name: 'Modern', 
-//     preview: '🎨 Clean & Minimal',
-//     description: 'Clean & Minimal design',
-//     sections: [
-//       { id: 'hero', name: 'Hero Section', required: true },
-//       { id: 'about', name: 'About Section', required: false },
-//       { id: 'products', name: 'Products Showcase', required: true },
-//       { id: 'testimonials', name: 'Testimonials', required: false },
-//       { id: 'contact', name: 'Contact Section', required: false }
-//     ]
-//   },
-//   { 
-//     id: 'classic', 
-//     name: 'Classic', 
-//     preview: '📜 Traditional & Elegant',
-//     description: 'Traditional & Elegant design',
-//     sections: [
-//       { id: 'header', name: 'Header Section', required: true },
-//       { id: 'hero', name: 'Hero Section', required: true },
-//       { id: 'about', name: 'About Section', required: true },
-//       { id: 'products', name: 'Products Showcase', required: true },
-//       { id: 'gallery', name: 'Gallery', required: false },
-//       { id: 'testimonials', name: 'Testimonials', required: false },
-//       { id: 'contact', name: 'Contact Section', required: true }
-//     ]
-//   },
-//   { 
-//     id: 'creative', 
-//     name: 'Creative', 
-//     preview: '🎭 Bold & Artistic',
-//     description: 'Bold & Artistic design',
-//     sections: [
-//       { id: 'hero', name: 'Hero Section', required: true },
-//       { id: 'portfolio', name: 'Portfolio Showcase', required: true },
-//       { id: 'products', name: 'Products Section', required: true },
-//       { id: 'process', name: 'Creative Process', required: false },
-//       { id: 'testimonials', name: 'Client Reviews', required: false },
-//       { id: 'contact', name: 'Get In Touch', required: false }
-//     ]
-//   }
-// ];
-
-// export default function BrandingPage() {
-//   const authUser = (() => {
-//     try {
-//       const raw = localStorage.getItem('auth_user');
-//       return raw ? JSON.parse(raw) as { id?: string } : null;
-//     } catch {
-//       return null;
-//     }
-//   })();
-//   const creatorId = authUser?.id;
-//   const [branding, setBranding] = useState({
-//     primaryColor: '#8B5CF6',
-//     secondaryColor: '#F3E8FF',
-//     font: 'Inter',
-//     template: 'modern',
-//     logo: null as File | null,
-//     backgroundImage: null as File | null,
-//     videoBanner: null as File | null,
-//     customColors: {} as Record<string, string>,
-//     templateSections: [] as string[],
-//     googleFonts: [] as any[],
-//     isLoading: false,
-//     creatorName: 'Your Creator Name',
-//     creatorBio: 'Independent creator bio',
-//     logoUrl: '' as string | undefined,
-//     backgroundImageUrl: '' as string | undefined,
-//     selectedFontFamily: '' as string | undefined
-//   });
-//   const [activeTab, setActiveTab] = useState('colors');
-//   const { toast } = useToast();
-
-//   // Load branding data and Google Fonts on component mount
-//   useEffect(() => {
-//     loadBrandingData();
-//     loadGoogleFonts();
-//   }, []);
-
-//   const loadBrandingData = async () => {
-//     try {
-//       setBranding(prev => ({ ...prev, isLoading: true }));
-//       if (!creatorId) throw new Error('Missing creatorId');
-//       const response = await api.get(`/branding/${creatorId}`);
-//       const data = response.data.data || {};
-//       setBranding(prev => ({
-//         ...prev,
-//         ...data,
-//         creatorName: data.creatorName || prev.creatorName,
-//         creatorBio: data.creatorBio || prev.creatorBio,
-//         logoUrl: data.logo || data.logoUrl || prev.logoUrl,
-//         backgroundImageUrl: data.backgroundImage || data.backgroundImageUrl || prev.backgroundImageUrl,
-//         selectedFontFamily: data.fontFamily || prev.selectedFontFamily,
-//         isLoading: false
-//       }));
-//     } catch (error) {
-//       console.error('Failed to load branding data:', error);
-//       setBranding(prev => ({ ...prev, isLoading: false }));
-//       toast({
-//         title: 'Failed to load branding',
-//         description: 'Please make sure you are logged in and have a valid creator account.',
-//         variant: 'destructive'
-//       });
-//     }
-//   };
-
-//   const loadGoogleFonts = async () => {
-//     try {
-//       const response = await api.get('/branding/fonts/google');
-//       setBranding(prev => ({ ...prev, googleFonts: response.data.data }));
-//     } catch (error) {
-//       console.error('Failed to load Google Fonts:', error);
-//     }
-//   };
-
-//   const handleColorChange = (palette: { primary: string; secondary: string }) => {
-//     setBranding(prev => ({
-//       ...prev,
-//       primaryColor: palette.primary,
-//       secondaryColor: palette.secondary
-//     }));
-//   };
-
-//   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//       try {
-//         setBranding(prev => ({ ...prev, isLoading: true }));
-//         const formData = new FormData();
-//         formData.append('logo', file);
-        
-//         if (!creatorId) throw new Error('Missing creatorId');
-//         const response = await api.post(`/branding/${creatorId}/logo`, formData, {
-//           headers: { 'Content-Type': 'multipart/form-data' }
-//         });
-        
-//         setBranding(prev => ({
-//           ...prev,
-//           logo: file,
-//           logoUrl: response.data.data.logoUrl,
-//           isLoading: false
-//         }));
-        
-//         toast({
-//           title: "Logo uploaded!",
-//           description: "Your logo has been uploaded successfully.",
-//         });
-//       } catch (error) {
-//         setBranding(prev => ({ ...prev, isLoading: false }));
-//         toast({
-//           title: "Upload failed",
-//           description: "Failed to upload logo. Please try again.",
-//           variant: "destructive"
-//         });
-//       }
-//     }
-//   };
-
-//   const handleBackgroundImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//       try {
-//         setBranding(prev => ({ ...prev, isLoading: true }));
-//         const formData = new FormData();
-//         formData.append('image', file);
-        
-//         if (!creatorId) throw new Error('Missing creatorId');
-//         const response = await api.post(`/content/${creatorId}/background`, formData, {
-//           headers: { 'Content-Type': 'multipart/form-data' }
-//         });
-        
-//         setBranding(prev => ({
-//           ...prev,
-//           backgroundImage: file,
-//           backgroundImageUrl: response.data.data.imageUrl,
-//           isLoading: false
-//         }));
-        
-//         toast({
-//           title: "Background uploaded!",
-//           description: "Your background image has been uploaded successfully.",
-//         });
-//       } catch (error) {
-//         setBranding(prev => ({ ...prev, isLoading: false }));
-//         toast({
-//           title: "Upload failed",
-//           description: "Failed to upload background image. Please try again.",
-//           variant: "destructive"
-//         });
-//       }
-//     }
-//   };
-
-//   const handleVideoBannerUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//       try {
-//         setBranding(prev => ({ ...prev, isLoading: true }));
-//         const formData = new FormData();
-//         formData.append('video', file);
-        
-//         if (!creatorId) throw new Error('Missing creatorId');
-//         const response = await api.post(`/content/${creatorId}/video-banner`, formData, {
-//           headers: { 'Content-Type': 'multipart/form-data' }
-//         });
-        
-//         setBranding(prev => ({ 
-//           ...prev, 
-//           videoBanner: file,
-//           videoBannerUrl: response.data.data.videoUrl,
-//           isLoading: false 
-//         }));
-        
-//         toast({
-//           title: "Video banner uploaded!",
-//           description: "Your video banner has been uploaded successfully.",
-//         });
-//       } catch (error) {
-//         setBranding(prev => ({ ...prev, isLoading: false }));
-//         toast({
-//           title: "Upload failed",
-//           description: "Failed to upload video banner. Please try again.",
-//           variant: "destructive"
-//         });
-//       }
-//     }
-//   };
-
-//   const handleSave = async () => {
-//     try {
-//       setBranding(prev => ({ ...prev, isLoading: true }));
-//       if (!creatorId) throw new Error('Missing creatorId');
-//       await api.put(`/branding/${creatorId}`, {
-//         primaryColor: branding.primaryColor,
-//         secondaryColor: branding.secondaryColor,
-//         font: branding.font,
-//         fontFamily: branding.selectedFontFamily,
-//         template: branding.template,
-//         customColors: branding.customColors,
-//         templateSections: branding.templateSections,
-//         creatorName: branding.creatorName,
-//         creatorBio: branding.creatorBio
-//       });
-      
-//       toast({
-//         title: "Branding saved!",
-//         description: "Your brand customizations have been saved.",
-//       });
-//     } catch (error) {
-//       toast({
-//         title: "Save failed",
-//         description: "Failed to save branding. Please try again.",
-//         variant: "destructive"
-//       });
-//     } finally {
-//       setBranding(prev => ({ ...prev, isLoading: false }));
-//     }
-//   };
-
-//   const handleTemplateChange = (templateId: string) => {
-//     const template = templates.find(t => t.id === templateId);
-//     setBranding(prev => ({ 
-//       ...prev, 
-//       template: templateId,
-//       templateSections: template?.sections.map(s => s.id) || []
-//     }));
-//   };
-
-//   const resolveAssetUrl = (value?: string) => {
-//     if (!value) return '';
-//     if (value.startsWith('http')) return value;
-//     if (value.startsWith('/uploads/')) {
-//       const base = (api.defaults.baseURL || '').replace(/\/?:?api\/?$/, '');
-//       return `${base}${value}`;
-//     }
-//     return value;
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-background">
-//       <Navbar 
-//         isAuthenticated={true} 
-//         user={{ name: 'Alex Rodriguez', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400', isCreator: true }} 
-//       />
-      
-//       <div className="container-custom section-padding">
-//         {/* Header */}
-//         <motion.div
-//           initial={{ opacity: 0, y: 30 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           transition={{ duration: 0.6 }}
-//           className="mb-8"
-//         >
-//           <div className="flex items-center justify-between mb-6">
-//             <div>
-//               <Link 
-//                 to="/dashboard" 
-//                 className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4 transition-colors"
-//               >
-//                 <ArrowLeft className="h-4 w-4 mr-2" />
-//                 Back to Dashboard
-//               </Link>
-//               <h1 className="text-3xl font-bold text-foreground mb-2">
-//                 Brand Customization
-//               </h1>
-//               <p className="text-muted-foreground">
-//                 Customize your creator world's look and feel
-//               </p>
-//             </div>
-//             <div className="flex space-x-3">
-//               <Button variant="outline" asChild>
-//                 <Link to="/creator/1">
-//                   <Eye className="h-4 w-4 mr-2" />
-//                   Preview
-//                 </Link>
-//               </Button>
-//               <Button 
-//                 className="btn-hero" 
-//                 onClick={handleSave}
-//                 disabled={branding.isLoading}
-//               >
-//                 <Save className="h-4 w-4 mr-2" />
-//                 {branding.isLoading ? 'Saving...' : 'Save Changes'}
-//               </Button>
-//             </div>
-//           </div>
-//         </motion.div>
-
-//         <Tabs value={activeTab} onValueChange={setActiveTab}>
-//           <TabsList className="mb-8">
-//             <TabsTrigger value="colors">Colors & Fonts</TabsTrigger>
-//             <TabsTrigger value="media">Media & Assets</TabsTrigger>
-//             <TabsTrigger value="templates">Templates</TabsTrigger>
-//             {/* <TabsTrigger value="sections">Sections</TabsTrigger> */}
-//           </TabsList>
-
-//           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-//             {/* Customization Panel */}
-//             <motion.div
-//               initial={{ opacity: 0, x: -30 }}
-//               animate={{ opacity: 1, x: 0 }}
-//               transition={{ duration: 0.6, delay: 0.1 }}
-//               className="space-y-6"
-//             >
-//               {/* Colors & Fonts Tab */}
-//               <TabsContent value="colors">
-//                 {/* Color Palette */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Palette className="h-5 w-5" />
-//                       <span>Color Palette</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Choose your brand colors</Label>
-//                       <div className="grid grid-cols-2 gap-3">
-//                         {colorPalettes.map((palette) => (
-//                           <button
-//                             key={palette.name}
-//                             onClick={() => handleColorChange(palette)}
-//                             className={`p-3 rounded-lg border-2 transition-all ${
-//                               branding.primaryColor === palette.primary
-//                                 ? 'border-primary shadow-md'
-//                                 : 'border-border hover:border-muted-foreground'
-//                             }`}
-//                           >
-//                             <div className="flex space-x-2 mb-2">
-//                               <div 
-//                                 className="w-6 h-6 rounded-full"
-//                                 style={{ backgroundColor: palette.primary }}
-//                               />
-//                               <div 
-//                                 className="w-6 h-6 rounded-full"
-//                                 style={{ backgroundColor: palette.secondary }}
-//                               />
-//                             </div>
-//                             <p className="text-xs font-medium">{palette.name}</p>
-//                           </button>
-//                         ))}
-//                       </div>
-                      
-//                       <div className="grid grid-cols-2 gap-4 pt-4">
-//                         <div>
-//                           <Label htmlFor="primary-color">Primary Color</Label>
-//                           <div className="flex space-x-2">
-//                             <Input
-//                               id="primary-color"
-//                               type="color"
-//                               value={branding.primaryColor}
-//                               onChange={(e) => setBranding(prev => ({ ...prev, primaryColor: e.target.value }))}
-//                               className="w-12 h-10 p-1 border rounded"
-//                             />
-//                             <Input
-//                               type="text"
-//                               value={branding.primaryColor}
-//                               onChange={(e) => setBranding(prev => ({ ...prev, primaryColor: e.target.value }))}
-//                               className="flex-1"
-//                             />
-//                           </div>
-//                         </div>
-//                         <div>
-//                           <Label htmlFor="secondary-color">Secondary Color</Label>
-//                           <div className="flex space-x-2">
-//                             <Input
-//                               id="secondary-color"
-//                               type="color"
-//                               value={branding.secondaryColor}
-//                               onChange={(e) => setBranding(prev => ({ ...prev, secondaryColor: e.target.value }))}
-//                               className="w-12 h-10 p-1 border rounded"
-//                             />
-//                             <Input
-//                               type="text"
-//                               value={branding.secondaryColor}
-//                               onChange={(e) => setBranding(prev => ({ ...prev, secondaryColor: e.target.value }))}
-//                               className="flex-1"
-//                             />
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-
-//                 {/* Typography */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Type className="h-5 w-5" />
-//                       <span>Typography</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Creator Name</Label>
-//                       <Input
-//                         value={branding.creatorName}
-//                         onChange={(e) => setBranding(prev => ({ ...prev, creatorName: e.target.value }))}
-//                         placeholder="Enter creator name"
-//                       />
-//                       <Label>Creator Description</Label>
-//                       <Textarea
-//                         value={branding.creatorBio}
-//                         onChange={(e) => setBranding(prev => ({ ...prev, creatorBio: e.target.value }))}
-//                         placeholder="Describe yourself"
-//                         rows={3}
-//                       />
-//                       <Label>Font Family</Label>
-//                       <Select value={branding.font} onValueChange={(value) => setBranding(prev => ({ ...prev, font: value, selectedFontFamily: (branding.googleFonts.find((f:any)=>f.name===value)?.family) || fontOptions.find(f=>f.name===value)?.family }))}>
-//                         <SelectTrigger className="w-full">
-//                           <SelectValue placeholder="Choose a font" />
-//                         </SelectTrigger>
-//                         <SelectContent position="popper" side="bottom" align="start" className="z-[9999] max-h-60 overflow-auto">
-//                           {(branding.googleFonts.length > 0 ? branding.googleFonts : fontOptions).map((font) => (
-//                             <SelectItem key={font.name} value={font.name}>
-//                               <span style={{ fontFamily: font.family }}>
-//                                 {font.name}
-//                               </span>
-//                             </SelectItem>
-//                           ))}
-//                         </SelectContent>
-//                       </Select>
-//                       <div className="p-4 bg-muted rounded-lg">
-//                         <p 
-//                           className="text-lg font-semibold mb-2"
-//                           style={{ 
-//                             fontFamily: branding.selectedFontFamily || fontOptions.find(f => f.name === branding.font)?.family,
-//                             color: branding.primaryColor 
-//                           }}
-//                         >
-//                           {branding.creatorName}
-//                         </p>
-//                         <p 
-//                           className="text-sm text-muted-foreground"
-//                           style={{ fontFamily: branding.selectedFontFamily || fontOptions.find(f => f.name === branding.font)?.family }}
-//                         >
-//                           {branding.creatorBio}
-//                         </p>
-//                       </div>
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-//               </TabsContent>
-
-//               {/* Media & Assets Tab */}
-//               <TabsContent value="media">
-//                 {/* Logo Upload */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Upload className="h-5 w-5" />
-//                       <span>Logo</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Upload your logo</Label>
-//                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center relative">
-//                         <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-//                         <p className="text-sm text-muted-foreground mb-2">
-//                           Click to upload or drag and drop
-//                         </p>
-//                         <p className="text-xs text-muted-foreground">
-//                           PNG, JPG up to 50MB
-//                         </p>
-//                         <input
-//                           type="file"
-//                           accept="image/*"
-//                           onChange={handleLogoUpload}
-//                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-//                         />
-//                       </div>
-//                       {branding.logo && (
-//                         <p className="text-sm text-green-600">
-//                           ✓ {branding.logo.name} uploaded
-//                         </p>
-//                       )}
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-
-//                 {/* Background Image */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Image className="h-5 w-5" />
-//                       <span>Background Image</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Upload background image</Label>
-//                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center relative">
-//                         <Image className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-//                         <p className="text-sm text-muted-foreground mb-2">
-//                           Click to upload or drag and drop
-//                         </p>
-//                         <p className="text-xs text-muted-foreground">
-//                           PNG, JPG up to 50MB
-//                         </p>
-//                         <input
-//                           type="file"
-//                           accept="image/*"
-//                           onChange={handleBackgroundImageUpload}
-//                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-//                         />
-//                       </div>
-//                       {branding.backgroundImage && (
-//                         <p className="text-sm text-green-600">
-//                           ✓ {branding.backgroundImage.name} uploaded
-//                         </p>
-//                       )}
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-
-//                 {/* Video Banner */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Video className="h-5 w-5" />
-//                       <span>Video Banner</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Upload video banner</Label>
-//                       <div className="border-2 border-dashed border-border rounded-lg p-6 text-center relative">
-//                         <Video className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-//                         <p className="text-sm text-muted-foreground mb-2">
-//                           Click to upload or drag and drop
-//                         </p>
-//                         <p className="text-xs text-muted-foreground">
-//                           MP4, MOV up to 100MB
-//                         </p>
-//                         <input
-//                           type="file"
-//                           accept="video/*"
-//                           onChange={handleVideoBannerUpload}
-//                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-//                         />
-//                       </div>
-//                       {branding.videoBanner && (
-//                         <p className="text-sm text-green-600">
-//                           ✓ {branding.videoBanner.name} uploaded
-//                         </p>
-//                       )}
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-//               </TabsContent>
-
-//               {/* Templates Tab */}
-//               <TabsContent value="templates">
-//                 {/* Template Selection */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Layout className="h-5 w-5" />
-//                       <span>Layout Template</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Choose your layout style</Label>
-//                       <div className="grid grid-cols-1 gap-4">
-//                         {templates.map((template) => (
-//                           <button
-//                             key={template.id}
-//                             onClick={() => handleTemplateChange(template.id)}
-//                             className={`p-4 rounded-lg border-2 transition-all text-left ${
-//                               branding.template === template.id
-//                                 ? 'border-primary shadow-md'
-//                                 : 'border-border hover:border-muted-foreground'
-//                             }`}
-//                           >
-//                             <div className="text-2xl mb-2">{template.preview}</div>
-//                             <p className="font-medium mb-1">{template.name}</p>
-//                             <p className="text-sm text-muted-foreground">{template.description}</p>
-//                             <div className="mt-2 flex flex-wrap gap-1">
-//                               {template.sections.slice(0, 3).map((section) => (
-//                                 <Badge key={section.id} variant="outline" className="text-xs">
-//                                   {section.name}
-//                                 </Badge>
-//                               ))}
-//                               {template.sections.length > 3 && (
-//                                 <Badge variant="outline" className="text-xs">
-//                                   +{template.sections.length - 3} more
-//                                 </Badge>
-//                               )}
-//                             </div>
-//                           </button>
-//                         ))}
-//                       </div>
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-//               </TabsContent>
-
-//               {/* Sections Tab */}
-//               <TabsContent value="sections">
-//                 {/* Template Sections */}
-//                 <Card className="card-elevated">
-//                   <CardHeader>
-//                     <CardTitle className="flex items-center space-x-2">
-//                       <Settings className="h-5 w-5" />
-//                       <span>Template Sections</span>
-//                     </CardTitle>
-//                   </CardHeader>
-//                   <CardContent>
-//                     <div className="space-y-4">
-//                       <Label>Customize your page sections</Label>
-//                       {templates.find(t => t.id === branding.template)?.sections.map((section) => (
-//                         <div key={section.id} className="flex items-center justify-between p-3 border rounded-lg">
-//                           <div className="flex items-center space-x-3">
-//                             <div className={`w-3 h-3 rounded-full ${section.required ? 'bg-red-500' : 'bg-gray-300'}`} />
-//                             <div>
-//                               <p className="font-medium">{section.name}</p>
-//                               <p className="text-sm text-muted-foreground">
-//                                 {section.required ? 'Required section' : 'Optional section'}
-//                               </p>
-//                             </div>
-//                           </div>
-//                           <Badge variant={section.required ? 'destructive' : 'secondary'}>
-//                             {section.required ? 'Required' : 'Optional'}
-//                           </Badge>
-//                         </div>
-//                       ))}
-//                     </div>
-//                   </CardContent>
-//                 </Card>
-//               </TabsContent>
-
-//             </motion.div>
-
-//           {/* Live Preview */}
-//           <motion.div
-//             initial={{ opacity: 0, x: 30 }}
-//             animate={{ opacity: 1, x: 0 }}
-//             transition={{ duration: 0.6, delay: 0.2 }}
-//             className="sticky top-8"
-//           >
-//             <Card className="card-elevated">
-//               <CardHeader>
-//                 <CardTitle>Live Preview</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <div 
-//                   className="aspect-video rounded-lg p-6 overflow-hidden"
-//                   style={{
-//                     background: branding.backgroundImageUrl 
-//                       ? `url(${resolveAssetUrl(branding.backgroundImageUrl as any)}) center/cover no-repeat`
-//                       : `linear-gradient(135deg, ${branding.primaryColor}20, ${branding.secondaryColor}20)`
-//                   }}
-//                 >
-//                   <div className="text-center space-y-4">
-//                     {/* Logo / Avatar */}
-//                     {branding.logoUrl ? (
-//                       <img
-//                         src={resolveAssetUrl(branding.logoUrl as any)}
-//                         alt="Logo"
-//                         className="w-16 h-16 rounded-full mx-auto border-4 object-cover"
-//                         style={{ borderColor: branding.primaryColor }}
-//                       />
-//                     ) : (
-//                       <div 
-//                         className="w-16 h-16 rounded-full mx-auto border-4"
-//                         style={{ 
-//                           backgroundColor: branding.primaryColor,
-//                           borderColor: branding.primaryColor
-//                         }}
-//                       />
-//                     )}
-                    
-//                     {/* Creator name */}
-//                     <h3 
-//                       className="text-xl font-bold"
-//                       style={{ 
-//                         fontFamily: branding.selectedFontFamily || fontOptions.find(f => f.name === branding.font)?.family,
-//                         color: branding.primaryColor
-//                       }}
-//                     >
-//                       {branding.creatorName}
-//                     </h3>
-                    
-//                     {/* Description */}
-//                     <p 
-//                       className="text-sm text-muted-foreground"
-//                       style={{ fontFamily: branding.selectedFontFamily || fontOptions.find(f => f.name === branding.font)?.family }}
-//                     >
-//                       {branding.creatorBio}
-//                     </p>
-                    
-//                     {/* CTA Button */}
-//                     <button
-//                       className="px-6 py-2 rounded-lg text-white font-medium text-sm"
-//                       style={{ backgroundColor: branding.primaryColor }}
-//                     >
-//                       Follow Creator
-//                     </button>
-//                   </div>
-//                 </div>
-                
-//                 <div className="mt-4 text-xs text-muted-foreground">
-//                   * This is a preview of how your creator world will look
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           </motion.div>
-//           </div>
-//         </Tabs>
-//       </div>
-//     </div>
-//   );
-// }
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, Palette, Type, Layout, Eye, Image, Video, Settings, Save, X } from 'lucide-react';
+import { ArrowLeft, Upload, Palette, Type, Layout, Eye, Image, Video, Save, X, Loader2 } from 'lucide-react';
 
 const colorPalettes = [
   { name: 'Purple Gradient', primary: '#8B5CF6', secondary: '#F3E8FF' },
@@ -854,6 +58,20 @@ function resolveAssetUrl(value?: string) {
 }
 
 export default function BrandingPage() {
+  // Get auth user info
+  const authUser = (() => {
+    try {
+      const raw = localStorage.getItem('auth_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const creatorId = authUser?.id;
+
+  const [brands, setBrands] = useState([]);
+  const [currentBrandId, setCurrentBrandId] = useState(null);
   const [branding, setBranding] = useState({
     primaryColor: '#8B5CF6',
     secondaryColor: '#F3E8FF',
@@ -861,12 +79,128 @@ export default function BrandingPage() {
     template: 'modern',
     creatorName: 'Your Creator Name',
     creatorBio: 'Independent creator bio',
-    logoPreview: null,
-    backgroundPreview: null,
-    videoPreview: null,
+    logoPreview: '',
+    backgroundPreview: '',
+    videoPreview: '',
+    logoUrl: '',
+    backgroundImageUrl: '',
+    videoBannerUrl: '',
   });
   const [activeTab, setActiveTab] = useState('colors');
   const [fontDropdownOpen, setFontDropdownOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [userHasTyped, setUserHasTyped] = useState(false);
+  const [showCreateBrand, setShowCreateBrand] = useState(false);
+  const [newBrandName, setNewBrandName] = useState('');
+  const [newBrandDescription, setNewBrandDescription] = useState('');
+  const { toast } = useToast();
+
+  // Load brands and default branding when component mounts
+  useEffect(() => {
+    const loadBrandsData = async () => {
+      if (!creatorId || userHasTyped) return;
+      
+      try {
+        setIsLoading(true);
+        
+        // Load all brands
+        const brandsResponse = await api.get(`/branding/${creatorId}`);
+        const brandsData = brandsResponse.data.data || [];
+        setBrands(brandsData);
+        
+        // If there are brands, load the default one
+        if (brandsData.length > 0) {
+          try {
+            const defaultResponse = await api.get(`/branding/${creatorId}/default`);
+            const defaultData = defaultResponse.data.data;
+            
+            if (defaultData) {
+              setCurrentBrandId(defaultData._id);
+              setBranding(prev => ({
+                ...prev,
+                // Colors
+                primaryColor: defaultData.primaryColor || '#8B5CF6',
+                secondaryColor: defaultData.secondaryColor || '#F3E8FF',
+                
+                // Typography
+                font: defaultData.font || 'Inter',
+                
+                // Template
+                template: defaultData.template || 'modern',
+                
+                // Media URLs
+                logoUrl: defaultData.logo || '',
+                backgroundImageUrl: defaultData.backgroundImage || '',
+                videoBannerUrl: defaultData.videoBanner || '',
+                
+                // Preview images (for immediate display)
+                logoPreview: defaultData.logo ? resolveAssetUrl(defaultData.logo) : '',
+                backgroundPreview: defaultData.backgroundImage ? resolveAssetUrl(defaultData.backgroundImage) : '',
+                videoPreview: defaultData.videoBanner ? resolveAssetUrl(defaultData.videoBanner) : '',
+                
+                // Brand info (use brand's name and description for customization)
+                creatorName: defaultData.name || defaultData.creatorName || authUser?.name || prev.creatorName,
+                creatorBio: defaultData.description || defaultData.creatorBio || authUser?.bio || prev.creatorBio,
+              }));
+            } else {
+              // If no default brand, use the first brand
+              const firstBrand = brandsData[0];
+              setCurrentBrandId(firstBrand._id);
+              setBranding(prev => ({
+                ...prev,
+                primaryColor: firstBrand.primaryColor || '#8B5CF6',
+                secondaryColor: firstBrand.secondaryColor || '#F3E8FF',
+                font: firstBrand.font || 'Inter',
+                template: firstBrand.template || 'modern',
+                logoUrl: firstBrand.logo || '',
+                backgroundImageUrl: firstBrand.backgroundImage || '',
+                videoBannerUrl: firstBrand.videoBanner || '',
+                logoPreview: firstBrand.logo ? resolveAssetUrl(firstBrand.logo) : '',
+                backgroundPreview: firstBrand.backgroundImage ? resolveAssetUrl(firstBrand.backgroundImage) : '',
+                videoPreview: firstBrand.videoBanner ? resolveAssetUrl(firstBrand.videoBanner) : '',
+                creatorName: firstBrand.name || authUser?.name || prev.creatorName,
+                creatorBio: firstBrand.description || authUser?.bio || prev.creatorBio,
+              }));
+            }
+          } catch (defaultError) {
+            console.error('Failed to load default branding:', defaultError);
+            // Use the first brand if default fails
+            const firstBrand = brandsData[0];
+            if (firstBrand) {
+              setCurrentBrandId(firstBrand._id);
+              setBranding(prev => ({
+                ...prev,
+                primaryColor: firstBrand.primaryColor || '#8B5CF6',
+                secondaryColor: firstBrand.secondaryColor || '#F3E8FF',
+                font: firstBrand.font || 'Inter',
+                template: firstBrand.template || 'modern',
+                logoUrl: firstBrand.logo || '',
+                backgroundImageUrl: firstBrand.backgroundImage || '',
+                videoBannerUrl: firstBrand.videoBanner || '',
+                logoPreview: firstBrand.logo ? resolveAssetUrl(firstBrand.logo) : '',
+                backgroundPreview: firstBrand.backgroundImage ? resolveAssetUrl(firstBrand.backgroundImage) : '',
+                videoPreview: firstBrand.videoBanner ? resolveAssetUrl(firstBrand.videoBanner) : '',
+                creatorName: firstBrand.name || authUser?.name || prev.creatorName,
+                creatorBio: firstBrand.description || authUser?.bio || prev.creatorBio,
+              }));
+            }
+          }
+        } else {
+          // No brands exist, use defaults
+          console.log('No brands found, using default values');
+        }
+    } catch (error) {
+        console.error('Failed to load brands data:', error);
+        // Use defaults on error, which are already set in useState
+      } finally {
+        setIsLoading(false);
+        setInitialDataLoaded(true);
+      }
+    };
+
+    loadBrandsData();
+  }, [creatorId, userHasTyped]);
 
   const handleColorChange = (palette) => {
     setBranding(prev => ({
@@ -876,25 +210,325 @@ export default function BrandingPage() {
     }));
   };
 
-  const handleFileUpload = (type, event) => {
+  const handleFileUpload = async (type, event) => {
     const file = event.target.files?.[0];
-    if (file) {
+    if (!file || !creatorId) return;
+
+      try {
+      setIsLoading(true);
+        const formData = new FormData();
+        
+      let apiResponse;
+      if (type === 'logo') {
+        formData.append('logo', file);
+        apiResponse = await api.post(`/branding/${creatorId}/${currentBrandId}/logo`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else if (type === 'background') {
+        formData.append('image', file);
+        apiResponse = await api.post(`/branding/${creatorId}/${currentBrandId}/background`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else if (type === 'video') {
+        formData.append('video', file);
+        apiResponse = await api.post(`/branding/${creatorId}/${currentBrandId}/video-banner`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      }
+
+      // Create preview from file
       const reader = new FileReader();
       reader.onloadend = () => {
+        if (type === 'logo') {
         setBranding(prev => ({ 
           ...prev, 
-          [`${type}Preview`]: reader.result
-        }));
+            logoUrl: apiResponse?.data.data.logoUrl || '',
+            logoPreview: reader.result as string
+          }));
+        } else if (type === 'background') {
+          setBranding(prev => ({ 
+            ...prev, 
+            backgroundImageUrl: apiResponse?.data.data.imageUrl || '',
+            backgroundPreview: reader.result as string
+          }));
+        } else if (type === 'video') {
+          setBranding(prev => ({ 
+            ...prev, 
+            videoBannerUrl: apiResponse?.data.data.videoUrl || '',
+            videoPreview: reader.result as string
+          }));
+        }
       };
       reader.readAsDataURL(file);
+        
+        toast({
+        title: "Upload successful!",
+        description: `${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully.`,
+        });
+      } catch (error) {
+      console.error(`${type} upload failed:`, error);
+        toast({
+          title: "Upload failed",
+        description: `Failed to upload ${type}. Please try again.`,
+          variant: "destructive"
+        });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const removeFile = (type) => {
+  const removeFile = async (type) => {
+    if (!creatorId || !currentBrandId) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Update the brand in the database to remove the media
+      const updateData: { logo?: null; backgroundImage?: null; videoBanner?: null } = {};
+      if (type === 'logo') {
+        updateData.logo = null;
+      } else if (type === 'background') {
+        updateData.backgroundImage = null;
+      } else if (type === 'video') {
+        updateData.videoBanner = null;
+      }
+      
+      await api.put(`/branding/${creatorId}/${currentBrandId}`, updateData);
+      
+      // Update local state
+      setBranding(prev => ({ 
+        ...prev, 
+        [`${type}Url`]: '',
+        [`${type}Preview`]: ''
+      }));
+      
+      toast({
+        title: "Media removed!",
+        description: `${type.charAt(0).toUpperCase() + type.slice(1)} has been removed from this brand.`,
+      });
+    } catch (error) {
+      console.error(`Failed to remove ${type}:`, error);
+      toast({
+        title: "Error",
+        description: `Failed to remove ${type}. Please try again.`,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Switch to a different brand
+  const handleBrandSwitch = async (brandId) => {
+    try {
+      setIsLoading(true);
+      const response = await api.get(`/branding/${creatorId}/${brandId}`);
+      const brandData = response.data.data;
+      
+      setCurrentBrandId(brandId);
         setBranding(prev => ({ 
           ...prev, 
-      [`${type}Preview`]: null
-    }));
+        // Colors
+        primaryColor: brandData.primaryColor || '#8B5CF6',
+        secondaryColor: brandData.secondaryColor || '#F3E8FF',
+        
+        // Typography
+        font: brandData.font || 'Inter',
+        
+        // Template
+        template: brandData.template || 'modern',
+        
+        // Media URLs
+        logoUrl: brandData.logo || '',
+        backgroundImageUrl: brandData.backgroundImage || '',
+        videoBannerUrl: brandData.videoBanner || '',
+        
+        // Preview images (for immediate display)
+        logoPreview: brandData.logo ? resolveAssetUrl(brandData.logo) : '',
+        backgroundPreview: brandData.backgroundImage ? resolveAssetUrl(brandData.backgroundImage) : '',
+        videoPreview: brandData.videoBanner ? resolveAssetUrl(brandData.videoBanner) : '',
+        
+        // Brand info (use brand's name and description for customization)
+        creatorName: brandData.name || brandData.creatorName || authUser?.name || prev.creatorName,
+        creatorBio: brandData.description || brandData.creatorBio || authUser?.bio || prev.creatorBio,
+        }));
+        
+        toast({
+        title: "Brand switched!",
+        description: `Now editing ${brandData.name} - all settings loaded`,
+        });
+      } catch (error) {
+      console.error('Failed to switch brand:', error);
+        toast({
+        title: "Error",
+        description: "Failed to switch brand. Please try again.",
+          variant: "destructive"
+        });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Create new brand
+  const handleCreateBrand = async () => {
+    if (!newBrandName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a brand name",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await api.post(`/branding/${creatorId}`, {
+        name: newBrandName,
+        description: newBrandDescription,
+        primaryColor: branding.primaryColor,
+        secondaryColor: branding.secondaryColor,
+        font: branding.font,
+        template: branding.template,
+        logo: branding.logoUrl,
+        backgroundImage: branding.backgroundImageUrl,
+        videoBanner: branding.videoBannerUrl
+      });
+
+      const newBrand = response.data.data;
+      setBrands(prev => [...prev, newBrand]);
+      setCurrentBrandId(newBrand._id);
+      
+      // Switch to the new brand immediately
+      await handleBrandSwitch(newBrand._id);
+      
+      setNewBrandName('');
+      setNewBrandDescription('');
+      setShowCreateBrand(false);
+      
+      toast({
+        title: "Brand created!",
+        description: `${newBrand.name} has been created and is now active.`,
+      });
+    } catch (error) {
+      console.error('Failed to create brand:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create brand. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Set default brand
+  const handleSetDefault = async (brandId) => {
+    try {
+      setIsLoading(true);
+      await api.put(`/branding/${creatorId}/${brandId}/default`);
+      
+      // Update local state
+      setBrands(prev => prev.map(brand => ({
+        ...brand,
+        isDefault: brand._id === brandId
+      })));
+        
+        toast({
+        title: "Default set!",
+        description: "Default brand has been updated.",
+        });
+      } catch (error) {
+      console.error('Failed to set default brand:', error);
+        toast({
+        title: "Error",
+        description: "Failed to set default brand. Please try again.",
+          variant: "destructive"
+        });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Delete brand
+  const handleDeleteBrand = async (brandId) => {
+    if (brands.length <= 1) {
+      toast({
+        title: "Cannot delete",
+        description: "You must have at least one brand.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await api.delete(`/branding/${creatorId}/${brandId}`);
+      
+      setBrands(prev => prev.filter(brand => brand._id !== brandId));
+      
+      // Switch to default brand if current brand was deleted
+      if (currentBrandId === brandId) {
+        const defaultBrand = brands.find(brand => brand._id !== brandId);
+        if (defaultBrand) {
+          await handleBrandSwitch(defaultBrand._id);
+        }
+      }
+      
+      toast({
+        title: "Brand deleted!",
+        description: "Brand has been deleted successfully.",
+      });
+    } catch (error) {
+      console.error('Failed to delete brand:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete brand. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Save branding changes
+  const handleSave = async () => {
+    if (!creatorId || !currentBrandId) {
+      toast({
+        title: "Error",
+        description: "User not authenticated or no brand selected",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await api.put(`/branding/${creatorId}/${currentBrandId}`, {
+        primaryColor: branding.primaryColor,
+        secondaryColor: branding.secondaryColor,
+        font: branding.font,
+        template: branding.template,
+        name: branding.creatorName, // Save as brand name
+        description: branding.creatorBio, // Save as brand description
+        logo: branding.logoUrl,
+        backgroundImage: branding.backgroundImageUrl,
+        videoBanner: branding.videoBannerUrl
+      });
+      
+      toast({
+        title: "Success!",
+        description: "Your branding settings have been saved successfully.",
+      });
+    } catch (error) {
+      console.error('Failed to save branding:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save branding settings. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const selectedFont = fontOptions.find(f => f.name === branding.font);
@@ -916,9 +550,17 @@ export default function BrandingPage() {
                 <Eye className="h-4 w-4 mr-2" />
                 Preview
               </button>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center">
-                <Save className="h-4 w-4 mr-2" />
-                Save Changes
+              <button 
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center disabled:opacity-50"
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
+                {isLoading ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
@@ -926,30 +568,240 @@ export default function BrandingPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Title */}
+        {/* Title and Brand Management */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Brand Customization
+                {currentBrandId && brands.find(b => b._id === currentBrandId) && (
+                  <span className="text-lg font-normal text-purple-600 ml-2">
+                    - {brands.find(b => b._id === currentBrandId).name}
+                  </span>
+                )}
               </h1>
-          <p className="text-gray-600">
-                Customize your creator world's look and feel
+              <p className="text-gray-600">
+                Create and manage multiple brand identities
               </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowCreateBrand(true)}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
+              >
+                <span className="mr-2">+</span>
+                Create New Brand
+              </button>
+            </div>
+          </div>
+
+          {/* Brand Selector */}
+          {brands.length > 0 && (
+            <div className="bg-white rounded-lg p-4 mb-6 border">
+              <h3 className="text-lg font-semibold mb-3">Your Brands</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {brands.map((brand) => (
+                  <div
+                    key={brand._id}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                      currentBrandId === brand._id
+                        ? 'border-purple-600 bg-purple-50 shadow-md'
+                        : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                    } ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+                    onClick={() => !isLoading && handleBrandSwitch(brand._id)}
+                  >
+                    {/* Brand Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-gray-900">{brand.name}</h4>
+                        {isLoading && currentBrandId === brand._id && (
+                          <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSetDefault(brand._id);
+                          }}
+                          className="p-1 text-gray-400 hover:text-green-600"
+                          title="Set as default"
+                        >
+                          ⭐
+                        </button>
+                        {brands.length > 1 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteBrand(brand._id);
+                            }}
+                            className="p-1 text-gray-400 hover:text-red-600"
+                            title="Delete brand"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Brand Description */}
+                    <p className="text-sm text-gray-600 mb-3">{brand.description}</p>
+
+                    {/* Brand Media Preview */}
+                    <div className="flex items-center gap-2 mb-3">
+                      {/* Logo Preview */}
+                      <div className="w-8 h-8 rounded-full border-2 flex items-center justify-center overflow-hidden"
+                           style={{ borderColor: brand.primaryColor || '#8B5CF6' }}>
+                        {brand.logo ? (
+                          <img 
+                            src={resolveAssetUrl(brand.logo)} 
+                            alt="Logo" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div 
+                            className="w-full h-full rounded-full"
+                            style={{ backgroundColor: brand.primaryColor || '#8B5CF6' }}
+                          />
+                        )}
+                      </div>
+
+                      {/* Background Preview */}
+                      <div className="w-8 h-8 rounded border flex items-center justify-center overflow-hidden">
+                        {brand.backgroundImage ? (
+                          <img 
+                            src={resolveAssetUrl(brand.backgroundImage)} 
+                            alt="Background" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div 
+                            className="w-full h-full"
+                            style={{ 
+                              background: `linear-gradient(135deg, ${brand.primaryColor || '#8B5CF6'}20, ${brand.secondaryColor || '#F3E8FF'}20)` 
+                            }}
+                          />
+                        )}
+                      </div>
+
+                      {/* Video Preview */}
+                      <div className="w-8 h-8 rounded border flex items-center justify-center overflow-hidden">
+                        {brand.videoBanner ? (
+                          <div className="w-full h-full bg-black flex items-center justify-center">
+                            <Video className="h-4 w-4 text-white" />
+                          </div>
+                        ) : (
+                          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                            <Video className="h-3 w-3 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Brand Info */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {brand.isDefault && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            Default
+                          </span>
+                        )}
+                        <span className="text-xs px-2 py-1 rounded border" style={{ color: brand.primaryColor || '#8B5CF6' }}>
+                          {brand.template || 'modern'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: brand.primaryColor || '#8B5CF6' }}
+                        />
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: brand.secondaryColor || '#F3E8FF' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Create Brand Modal */}
+          {showCreateBrand && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold mb-4">Create New Brand</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Brand Name</label>
+                    <input
+                      type="text"
+                      value={newBrandName}
+                      onChange={(e) => setNewBrandName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      placeholder="Enter brand name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea
+                      value={newBrandDescription}
+                      onChange={(e) => setNewBrandDescription(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      rows={3}
+                      placeholder="Enter brand description"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 mt-6">
+                  <button
+                    onClick={handleCreateBrand}
+                    disabled={isLoading}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                  >
+                    {isLoading ? 'Creating...' : 'Create Brand'}
+                  </button>
+                  <button
+                    onClick={() => setShowCreateBrand(false)}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!initialDataLoaded && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading your brands...
+            </div>
+          )}
         </motion.div>
 
         {/* Brand Summary */}
         <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Your Brand</CardTitle>
-          </CardHeader>
-          <CardContent>
+                  <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              Your Brand
+              {currentBrandId && (
+                <span className="text-sm font-normal text-gray-500">
+                  - {brands.find(b => b._id === currentBrandId)?.name || 'Loading...'}
+                </span>
+              )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
               <div className="flex items-center gap-4">
-                  {branding.logoPreview ? (
+                  {branding.logoUrl || branding.logoPreview ? (
                   <img  
-                      src={branding.logoPreview as any}
+                      src={resolveAssetUrl(branding.logoUrl) || branding.logoPreview}
                   alt="Logo"
                   className="w-16 h-16 rounded-full object-cover border"
                   style={{ borderColor: branding.primaryColor }}
@@ -1049,13 +901,19 @@ export default function BrandingPage() {
                         <input
                               type="color"
                               value={branding.primaryColor}
-                              onChange={(e) => setBranding(prev => ({ ...prev, primaryColor: e.target.value }))}
+                              onChange={(e) => {
+                                setUserHasTyped(true);
+                                setBranding(prev => ({ ...prev, primaryColor: e.target.value }));
+                              }}
                           className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
                             />
                         <input
                               type="text"
                               value={branding.primaryColor}
-                              onChange={(e) => setBranding(prev => ({ ...prev, primaryColor: e.target.value }))}
+                              onChange={(e) => {
+                                setUserHasTyped(true);
+                                setBranding(prev => ({ ...prev, primaryColor: e.target.value }));
+                              }}
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                             />
                           </div>
@@ -1066,13 +924,19 @@ export default function BrandingPage() {
                         <input
                               type="color"
                               value={branding.secondaryColor}
-                              onChange={(e) => setBranding(prev => ({ ...prev, secondaryColor: e.target.value }))}
+                              onChange={(e) => {
+                                setUserHasTyped(true);
+                                setBranding(prev => ({ ...prev, secondaryColor: e.target.value }));
+                              }}
                           className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
                             />
                         <input
                               type="text"
                               value={branding.secondaryColor}
-                              onChange={(e) => setBranding(prev => ({ ...prev, secondaryColor: e.target.value }))}
+                              onChange={(e) => {
+                                setUserHasTyped(true);
+                                setBranding(prev => ({ ...prev, secondaryColor: e.target.value }));
+                              }}
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                             />
                           </div>
@@ -1088,23 +952,29 @@ export default function BrandingPage() {
                   </div>
                     <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Creator Name</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Brand Name</label>
                       <input
                         type="text"
                         value={branding.creatorName}
-                        onChange={(e) => setBranding(prev => ({ ...prev, creatorName: e.target.value }))}
+                        onChange={(e) => {
+                          setUserHasTyped(true);
+                          setBranding(prev => ({ ...prev, creatorName: e.target.value }));
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="Enter creator name"
+                        placeholder="Enter brand name"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Creator Description</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Brand Description</label>
                       <textarea
                         value={branding.creatorBio}
-                        onChange={(e) => setBranding(prev => ({ ...prev, creatorBio: e.target.value }))}
+                        onChange={(e) => {
+                          setUserHasTyped(true);
+                          setBranding(prev => ({ ...prev, creatorBio: e.target.value }));
+                        }}
                         rows={3}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="Describe yourself"
+                        placeholder="Describe your brand"
                       />
                     </div>
                     <div>
@@ -1168,8 +1038,13 @@ export default function BrandingPage() {
                   <div className="flex items-center space-x-2 mb-4">
                     <Upload className="h-5 w-5 text-purple-600" />
                     <h3 className="text-lg font-semibold">Logo</h3>
+                    {currentBrandId && brands.find(b => b._id === currentBrandId) && (
+                      <span className="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded">
+                        for {brands.find(b => b._id === currentBrandId).name}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">Upload your logo</p>
+                  <p className="text-sm text-gray-600 mb-4">Upload logo for this specific brand</p>
                   {branding.logoPreview ? (
                     <div className="relative">
                       <img src={branding.logoPreview} alt="Logo" className="w-full h-32 object-cover rounded-lg" />
@@ -1200,8 +1075,13 @@ export default function BrandingPage() {
                   <div className="flex items-center space-x-2 mb-4">
                     <Image className="h-5 w-5 text-purple-600" />
                     <h3 className="text-lg font-semibold">Background Image</h3>
+                    {currentBrandId && brands.find(b => b._id === currentBrandId) && (
+                      <span className="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded">
+                        for {brands.find(b => b._id === currentBrandId).name}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">Upload background image</p>
+                  <p className="text-sm text-gray-600 mb-4">Upload background image for this specific brand</p>
                   {branding.backgroundPreview ? (
                     <div className="relative">
                       <img src={branding.backgroundPreview} alt="Background" className="w-full h-48 object-cover rounded-lg" />
@@ -1232,8 +1112,13 @@ export default function BrandingPage() {
                   <div className="flex items-center space-x-2 mb-4">
                     <Video className="h-5 w-5 text-purple-600" />
                     <h3 className="text-lg font-semibold">Video Banner</h3>
+                    {currentBrandId && brands.find(b => b._id === currentBrandId) && (
+                      <span className="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded">
+                        for {brands.find(b => b._id === currentBrandId).name}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">Upload video banner</p>
+                  <p className="text-sm text-gray-600 mb-4">Upload video banner for this specific brand</p>
                   {branding.videoPreview ? (
                     <div className="relative">
                       <video src={branding.videoPreview} controls className="w-full h-48 rounded-lg bg-black" />
@@ -1294,20 +1179,28 @@ export default function BrandingPage() {
           <div className="sticky top-8">
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6 border-b">
-                <h3 className="text-lg font-semibold">Live Preview</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Live Preview</h3>
+                  {currentBrandId && brands.find(b => b._id === currentBrandId) && (
+                    <span className="text-sm text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
+                      {brands.find(b => b._id === currentBrandId).name}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500 mt-1">Preview of the selected brand</p>
               </div>
               <div className="p-6">
                 <div 
                   className="aspect-video rounded-lg p-6 overflow-hidden relative"
                   style={{
-                    background: branding.backgroundPreview 
-                      ? `url(${branding.backgroundPreview}) center/cover no-repeat`
+                    background: (branding.backgroundPreview || branding.backgroundImageUrl) 
+                      ? `url(${branding.backgroundPreview || resolveAssetUrl(branding.backgroundImageUrl)}) center/cover no-repeat`
                       : `linear-gradient(135deg, ${branding.primaryColor}20, ${branding.secondaryColor}20)`
                   }}
                 >
-                  {branding.videoPreview && (
+                  {(branding.videoPreview || branding.videoBannerUrl) && (
                     <video 
-                      src={branding.videoPreview} 
+                      src={branding.videoPreview || resolveAssetUrl(branding.videoBannerUrl)} 
                       autoPlay 
                       loop 
                       muted 
@@ -1315,9 +1208,9 @@ export default function BrandingPage() {
                     />
                   )}
                   <div className="relative z-10 text-center space-y-4">
-                    {branding.logoPreview ? (
+                    {(branding.logoPreview || branding.logoUrl) ? (
                       <img
-                        src={branding.logoPreview}
+                        src={branding.logoPreview || resolveAssetUrl(branding.logoUrl)}
                         alt="Logo"
                         className="w-16 h-16 rounded-full mx-auto border-4 object-cover"
                         style={{ borderColor: branding.primaryColor }}

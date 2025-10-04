@@ -89,9 +89,16 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-6 bg-primary/10 text-primary border-primary/20">
-                ✨ Now with AI-powered recommendations
-              </Badge>
+              <div className="flex items-center justify-center mb-6">
+                <img 
+                  src="/Logo V1.png" 
+                  alt="Frems Logo" 
+                  className="h-14  w-auto mr-4"
+                />
+                <Badge className="bg-primary/10 text-primary border-primary/20">
+                  ✨ Now with AI-powered recommendations
+                </Badge>
+              </div>
               
               <h1 className="text-hero mb-6">
                 Turn Your Passion Into Your

@@ -67,8 +67,8 @@ const App = () => (
           </Route>
           <Route path="/user" element={<DashboardLayout type="user" />}>
             <Route path="dashboard" element={<UserDashboardPage />} />
-            <Route path="subscriptions" element={<UserSubscriptionsPage />} />
-            <Route path="purchases" element={<UserPurchasesPage />} />
+            {/* <Route path="subscriptions" element={<UserSubscriptionsPage />} />
+            <Route path="purchases" element={<UserPurchasesPage />} /> */}
             <Route path="profile" element={<UserProfilePage />} />
           </Route>
           <Route path="*" element={<NotFound />} />

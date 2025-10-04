@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Loader2 } from 'lucide-react';
 import { 
   Package, 
   CreditCard, 
@@ -15,6 +17,7 @@ import {
   Calendar,
   ArrowRight
 } from 'lucide-react';
+import api from '@/lib/axios';
 
 // Mock user data
 const userData = {
@@ -79,31 +82,39 @@ const activeSubscriptions = [
   }
 ];
 
-const favoriteCreators = [
-  {
-    id: 1,
-    name: 'Alex Rodriguez',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
-    category: 'Music',
-    followers: 2450
-  },
-  {
-    id: 2,
-    name: 'Sarah Johnson',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=400',
-    category: 'Fitness',
-    followers: 3200
-  },
-  {
-    id: 3,
-    name: 'Mike Chen',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-    category: 'Technology',
-    followers: 1890
+// Helper function to resolve upload URLs
+const resolveAssetUrl = (value?: string) => {
+  if (!value) return '';
+  if (value.startsWith('http') || value.startsWith('data:')) return value;
+  if (value.startsWith('/uploads/')) {
+    const base = (api.defaults.baseURL || '').replace(/\/?api\/?$/, '');
+    return `${base}${value}`;
   }
-];
+  return value;
+};
 
 export default function UserDashboardPage() {
+  const [favoriteCreators, setFavoriteCreators] = useState([]);
+  const [creatorsLoading, setCreatorsLoading] = useState(true);
+
+  // Fetch creators from API
+  useEffect(() => {
+    const fetchCreators = async () => {
+      try {
+        setCreatorsLoading(true);
+        const response = await api.get('/creators');
+        setFavoriteCreators(response.data.data.slice(0, 6)); // Get first 6 creators as "favorites"
+      } catch (error) {
+        console.error('Failed to fetch creators:', error);
+        setFavoriteCreators([]);
+      } finally {
+        setCreatorsLoading(false);
+      }
+    };
+
+    fetchCreators();
+  }, []);
+
   const stats = [
     {
       title: 'Total Spent',
@@ -317,35 +328,44 @@ export default function UserDashboardPage() {
             <CardTitle>Favorite Creators</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {favoriteCreators.map((creator) => (
-                <Link key={creator.id} to={`/creator/${creator.id}`}>
-                  <Card className="card-interactive p-4 h-full">
-                    <CardContent className="p-0">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={creator.avatar} alt={creator.name} />
-                          <AvatarFallback>{creator.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-foreground mb-1">
-                            {creator.name}
-                          </h3>
-                          <div className="flex items-center justify-between">
-                            <Badge variant="outline" className="text-xs">
-                              {creator.category}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              {creator.followers.toLocaleString()} followers
-                            </span>
+            {creatorsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {favoriteCreators.map((creator) => (
+                  <Link key={creator._id} to={`/creator/${creator._id}`}>
+                    <Card className="card-interactive p-4 h-full">
+                      <CardContent className="p-0">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage 
+                              src={resolveAssetUrl(creator.user?.avatar) || resolveAssetUrl(creator.branding?.logo)} 
+                              alt={creator.user?.name || creator.handle} 
+                            />
+                            <AvatarFallback>{creator.user?.name?.[0] || creator.handle[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-foreground mb-1">
+                              {creator.user?.name || creator.handle}
+                            </h3>
+                            <div className="flex items-center justify-between">
+                              <Badge variant="outline" className="text-xs">
+                                Creator
+                              </Badge>
+                              <span className="text-xs text-muted-foreground">
+                                @{creator.handle}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
             
             <Link to="/discover" className="block mt-4">
               <Button variant="outline" className="w-full">

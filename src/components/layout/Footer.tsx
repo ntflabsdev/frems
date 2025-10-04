@@ -52,9 +52,13 @@ export function Footer() {
             <Link to="/" className="flex items-center space-x-2 mb-4">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="bg-gradient-primary p-2 rounded-lg"
+                className="flex items-center"
               >
-                <span className="text-white font-bold text-xl">F</span>
+                <img 
+                  src="/Logo V1.png" 
+                  alt="Frems Logo" 
+                  className="h-8 w-auto"
+                />
               </motion.div>
               <span className="font-bold text-xl text-foreground">FREMS</span>
             </Link>

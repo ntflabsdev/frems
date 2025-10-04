@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProductCard } from '@/components/cards/ProductCard';
 import { SubscriptionCard } from '@/components/cards/SubscriptionCard';
+import { Loader2 } from 'lucide-react';
 import { 
   ArrowLeft, 
   CheckCircle, 
@@ -21,13 +22,27 @@ import {
   MessageCircle,
   Send
 } from 'lucide-react';
-import { mockCreators, Creator } from '@/lib/mockData';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import api from '@/lib/axios';
+
+// Helper function to resolve upload URLs
+const resolveAssetUrl = (value?: string) => {
+  if (!value) return '';
+  if (value.startsWith('http') || value.startsWith('data:')) return value;
+  if (value.startsWith('/uploads/')) {
+    const base = (api.defaults.baseURL || '').replace(/\/?api\/?$/, '');
+    return `${base}${value}`;
+  }
+  return value;
+};
 
 export default function CreatorWorldPage() {
   const { id } = useParams();
-  const [creator, setCreator] = useState<Creator | null>(null);
+  const [creator, setCreator] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([
@@ -37,10 +52,39 @@ export default function CreatorWorldPage() {
   ]);
   const { toast } = useToast();
 
+  // Fetch creator and products from API
   useEffect(() => {
-    // Find creator by ID
-    const foundCreator = mockCreators.find(c => c.id === id);
-    setCreator(foundCreator || null);
+    const fetchCreatorData = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        
+        // Fetch creator details
+        const creatorResponse = await api.get(`/creators/${id}`);
+        const creatorData = creatorResponse.data.data;
+        setCreator(creatorData);
+        
+        // Fetch creator's products
+        setProductsLoading(true);
+        const productsResponse = await api.get(`/content/${id}/products`);
+        const productsData = productsResponse.data.data.products || [];
+        setProducts(productsData);
+        
+      } catch (error) {
+        console.error('Failed to fetch creator data:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load creator. Please try again.',
+          variant: 'destructive'
+        });
+      } finally {
+        setLoading(false);
+        setProductsLoading(false);
+      }
+    };
+
+    fetchCreatorData();
   }, [id]);
 
   const handleFollow = () => {
@@ -89,6 +133,17 @@ export default function CreatorWorldPage() {
       setChatMessage('');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">Loading creator...</h2>
+        </div>
+      </div>
+    );
+  }
 
   if (!creator) {
     return (
@@ -167,82 +222,67 @@ export default function CreatorWorldPage() {
             className="text-center"
           >
             <Avatar className="h-32 w-32 mx-auto mb-6 border-4 border-creator-background">
-              <AvatarImage src={creator.avatar} alt={creator.displayName} />
+              <AvatarImage 
+                src={resolveAssetUrl(creator.user?.avatar) || resolveAssetUrl(creator.branding?.logo)} 
+                alt={creator.user?.name || creator.handle} 
+              />
               <AvatarFallback className="text-2xl">
-                {creator.displayName[0]}
+                {creator.user?.name?.[0] || creator.handle[0]}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex items-center justify-center space-x-2 mb-2">
               <h1 className="text-4xl font-bold text-foreground">
-                {creator.displayName}
+                {creator.user?.name || creator.handle}
               </h1>
-              {creator.isVerified && (
-                <CheckCircle 
-                  className="h-6 w-6" 
-                  style={{ color: creator.branding.primaryColor }}
-                />
-              )}
             </div>
 
             <Badge 
               className="mb-4"
               style={{
-                backgroundColor: creator.branding.primaryColor,
+                backgroundColor: creator.branding?.primaryColor || '#8B5CF6',
                 color: 'white'
               }}
             >
-              {creator.category}
+              Creator
             </Badge>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              {creator.bio}
+              {creator.bio || `Hello! I'm ${ creator.user?.name || creator.handle }.`}
             </p>
 
             <div className="flex items-center justify-center space-x-8 mb-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {creator.subscriberCount.toLocaleString()}
+                  @{creator.handle}
                 </div>
-                <div className="text-sm text-muted-foreground">Followers</div>
+                <div className="text-sm text-muted-foreground">Handle</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {creator.products.length}
+                  {products.length}
                 </div>
                 <div className="text-sm text-muted-foreground">Products</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {creator.subscriptionTiers.length}
+                  {creator.mediaLibrary?.length || 0}
                 </div>
-                <div className="text-sm text-muted-foreground">Tiers</div>
+                <div className="text-sm text-muted-foreground">Media</div>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="flex items-center justify-center space-x-4">
-              {creator.socialLinks.instagram && (
-                <Button variant="outline" size="sm" asChild>
-                  <a href={creator.socialLinks.instagram} target="_blank" rel="noopener noreferrer">
-                    <Instagram className="h-4 w-4" />
+              {creator.socialLinks?.map((link, index) => (
+                <Button key={index} variant="outline" size="sm" asChild>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.platform === 'instagram' && <Instagram className="h-4 w-4" />}
+                    {link.platform === 'youtube' && <Youtube className="h-4 w-4" />}
+                    {link.platform === 'website' && <Globe className="h-4 w-4" />}
                   </a>
                 </Button>
-              )}
-              {creator.socialLinks.youtube && (
-                <Button variant="outline" size="sm" asChild>
-                  <a href={creator.socialLinks.youtube} target="_blank" rel="noopener noreferrer">
-                    <Youtube className="h-4 w-4" />
-                  </a>
-                </Button>
-              )}
-              {creator.socialLinks.website && (
-                <Button variant="outline" size="sm" asChild>
-                  <a href={creator.socialLinks.website} target="_blank" rel="noopener noreferrer">
-                    <Globe className="h-4 w-4" />
-                  </a>
-                </Button>
-              )}
+              ))}
             </div>
           </motion.div>
         </div>
@@ -270,17 +310,32 @@ export default function CreatorWorldPage() {
                     Featured Products
                   </h2>
                   <p className="text-muted-foreground">
-                    Discover exclusive content and products from {creator.displayName}
+                    Discover exclusive content and products from {creator.user?.name || creator.handle}
                   </p>
                 </div>
 
-                {creator.products.length > 0 ? (
+                {productsLoading ? (
+                  <div className="flex items-center justify-center py-16">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="ml-2">Loading products...</span>
+                  </div>
+                ) : products.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {creator.products.map((product) => (
+                    {products.map((product) => (
                       <ProductCard
-                        key={product.id}
-                        product={product}
-                        creatorColor={creator.branding.primaryColor}
+                        key={product._id}
+                        product={{
+                          ...product,
+                          id: product._id,
+                          image: resolveAssetUrl(product.image),
+                          name: product.title,
+                          price: product.priceCents ? product.priceCents / 100 : 0,
+                          creator: {
+                            displayName: creator.user?.name || creator.handle,
+                            avatar: resolveAssetUrl(creator.user?.avatar) || resolveAssetUrl(creator.branding?.logo)
+                          }
+                        }}
+                        creatorColor={creator.branding?.primaryColor || '#8B5CF6'}
                         onPurchase={handlePurchase}
                       />
                     ))}
@@ -307,29 +362,15 @@ export default function CreatorWorldPage() {
                     Subscription Tiers
                   </h2>
                   <p className="text-muted-foreground">
-                    Support {creator.displayName} and get exclusive perks
+                    Support {creator.user?.name || creator.handle} and get exclusive perks
                   </p>
                 </div>
 
-                {creator.subscriptionTiers.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {creator.subscriptionTiers.map((tier, index) => (
-                      <SubscriptionCard
-                        key={tier.id}
-                        tier={tier}
-                        creatorColor={creator.branding.primaryColor}
-                        isPopular={index === 1} // Mark second tier as popular
-                        onSubscribe={handleSubscribe}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <p className="text-muted-foreground">
-                      No subscription tiers available yet.
-                    </p>
-                  </div>
-                )}
+                <div className="text-center py-16">
+                  <p className="text-muted-foreground">
+                    Subscription tiers coming soon! Stay tuned for exclusive membership options.
+                  </p>
+                </div>
               </motion.div>
             </TabsContent>
 
@@ -394,9 +435,9 @@ export default function CreatorWorldPage() {
                       <div className="space-y-6">
                         <div className="text-center">
                           <div className="text-3xl font-bold text-foreground mb-2">
-                            {creator.subscriberCount.toLocaleString()}
+                            @{creator.handle}
                           </div>
-                          <p className="text-muted-foreground">Total Followers</p>
+                          <p className="text-muted-foreground">Creator Handle</p>
                         </div>
                         
                         <Separator />

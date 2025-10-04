@@ -118,12 +118,19 @@ export function DashboardSidebar({ type }: DashboardSidebarProps) {
   return (
     <Sidebar variant="inset" className="border-r border-border">
       <SidebarHeader className="border-b border-border p-4">
-        <h2 className={cn(
-          "font-semibold text-foreground transition-opacity duration-200",
-          state === "collapsed" && "opacity-0"
-        )}>
-          {getTitle()}
-        </h2>
+        <div className="flex items-center space-x-3">
+          <img 
+            src="/Logo V1.png" 
+            alt="Frems Logo" 
+            className="h-14  w-auto"
+          />
+          <h2 className={cn(
+            "font-semibold text-foreground transition-opacity duration-200",
+            state === "collapsed" && "opacity-0"
+          )}>
+            {getTitle()}
+          </h2>
+        </div>
       </SidebarHeader>
       
       <SidebarContent>

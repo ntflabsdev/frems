@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://development.ntfinfotech.com/frems/api',
+  baseURL: 'http://localhost:3000/api',
   withCredentials: true,
 });
 

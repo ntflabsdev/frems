@@ -43,6 +43,8 @@ export default function LoginPage() {
         navigate('/admin');
       } else if (user.role === 'creator') {
         navigate('/dashboard');
+      } else if (user.role === 'user') {
+        navigate('/user/dashboard');
       } else {
         navigate('/discover');
       }
@@ -82,6 +84,13 @@ export default function LoginPage() {
           >
             <Card className="card-elevated">
               <CardHeader className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <img 
+                    src="/Logo V1.png" 
+                    alt="Frems Logo" 
+                    className="h-14  w-auto"
+                  />
+                </div>
                 <CardTitle className="text-2xl font-bold text-foreground">
                   Welcome Back
                 </CardTitle>
